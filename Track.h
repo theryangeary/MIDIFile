@@ -6,21 +6,22 @@
 #ifndef Track_h 
 #define Track_h 
 
+#include "NoteEvent.h"
+
 class Track 
 {
   public:
     Track() {
+
     }
 
 
   private:
-    int currentNote = 0;
+    int currentNote;
     NoteEvent * noteEvents[];
     int length;
 
 
-}
-
-}
+};
 
 #endif

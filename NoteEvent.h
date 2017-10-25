@@ -14,26 +14,25 @@ enum EventType {
     PROGRAM_CHANGE, 
     CHANNEL_KEY_PRESSURE,
     PITCH_BEND
-}
+};
 
 class NoteEvent
 {
   public:
-    NoteEvent(int deltaT, EventType eventType, byte pitch, byte velocity) {
+    NoteEvent(int deltaT, EventType eventType, char pitch, char velocity) {
 
     }
 
 
   private:
-    class NoteEvent {
     int deltaT;
     EventType eventType;
-    byte pitch;
-    byte velocity;
+    char pitch;
+    char velocity;
 
 
-}
-
-}
+};
 
 #endif
+
+
