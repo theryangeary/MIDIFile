@@ -37,25 +37,33 @@ class MIDIFile
     int numberOfTracks;
     int BPM;
   public:
-    MIDIFile(ifstream midiFile) {
+    MIDIFile(ifstream * midiFile) {
 	// initialize variables
 	BPM = 120;
 
         // find the beginning of the MIDI data
         //midiFile.find('Mthd', 4); 
-
+cout << "file test 1"<<endl;
         // store MIDI header data
 	char tmp[1];
-        midiFile.read(tmp, 1);
+        midiFile->read(tmp, 1);
+	cout << "file test 2" << endl;
 	headerChunkLength = (int) tmp[0];
-//        midiFile.read(formatNumber, sizeof(formatNumber));  
- //       midiFile.read(numberOfTracks, sizeof(numberOfTracks));
-  //      midiFile.read(ticksPerQuarterNote, sizeof(ticksPerQuarterNote));        
+	cout << "file test 2.5" <<endl;
+        midiFile->read(tmp, 1);
+	formatNumber = (int) tmp[0];
+	format = static_cast<MIDIFormat>(formatNumber);
+	cout << "file test 3" <<endl;
+        midiFile->read(tmp, 1); 
+	numberOfTracks = (int) tmp[0];
+        midiFile->read(tmp, 1);        
+	ticksPerQuarterNote = (int) tmp[0];
 
         // check header chunk size compared to 6, the intended Mthd size
         int runningLength = 0;
  //       int runningLength += sizeof(numberOfTracks);
         runningLength += sizeof headerChunkLength;
+	cout << "file test 4" <<endl;
   //      int runningLength += sizeof(ticksPerQuarterNote);
     };
     
@@ -63,23 +71,23 @@ class MIDIFile
         return track[trackNumber];
     }
 
-    getHeaderChunkLength() {
+    int getHeaderChunkLength() {
         return headerChunkLength;
     }
 
-    getTicksPerQuarterNote() {
+    int getTicksPerQuarterNote() {
         return ticksPerQuarterNote;
     }
 
-    getFormat() {
+    MIDIFormat getFormat() {
         return format;
     }
 
-    getNumberOfTracks() {
+    int getNumberOfTracks() {
         return numberOfTracks;
     }
 
-    getBPM() {
+    int getBPM() {
         return BPM;
     }
 
