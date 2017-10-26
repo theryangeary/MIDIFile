@@ -11,6 +11,9 @@
 #include "Track.h"
 #include "NoteEvent.h"
 
+#define HEADER_CHUNK_LENGTH_BYTE_LENGTH 4 
+#define HEADER_CHUNK_DATA_BYTE_LENGTH 2
+
 using namespace::std;
 
 // MIDI file format
@@ -36,6 +39,14 @@ class MIDIFile
     MIDIFormat format;
     int numberOfTracks;
     int BPM;
+
+    int charArrayToInt(char* bytes, int numBytes) {
+	    int result = 0;
+	for (int i = 0; i < numBytes; i++) {
+	       result = (result << 8) | bytes[i];
+	}	       
+	return result;
+	}
   public:
     MIDIFile(ifstream * midiFile) {
 	// initialize variables
@@ -43,27 +54,28 @@ class MIDIFile
 
         // find the beginning of the MIDI data
         //midiFile.find('Mthd', 4); 
-cout << "file test 1"<<endl;
         // store MIDI header data
-	char tmp[1];
-        midiFile->read(tmp, 1);
-	cout << "file test 2" << endl;
-	headerChunkLength = (int) tmp[0];
-	cout << "file test 2.5" <<endl;
-        midiFile->read(tmp, 1);
-	formatNumber = (int) tmp[0];
-	format = static_cast<MIDIFormat>(formatNumber);
-	cout << "file test 3" <<endl;
-        midiFile->read(tmp, 1); 
-	numberOfTracks = (int) tmp[0];
-        midiFile->read(tmp, 1);        
-	ticksPerQuarterNote = (int) tmp[0];
+	char tmp[4];
+        midiFile->read(tmp, 4); // read the header
+
+	midiFile->read(tmp, 
+			HEADER_CHUNK_LENGTH_BYTE_LENGTH); // read the chunk length
+	headerChunkLength = charArrayToInt(tmp, HEADER_CHUNK_LENGTH_BYTE_LENGTH);
+
+        midiFile->read(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH); // read the format
+	formatNumber = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
+	format = static_cast<MIDIFormat>(formatNumber); // set MIDIFormat enum
+
+        midiFile->read(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH); // read # of tracks
+	numberOfTracks = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
+
+        midiFile->read(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH); // read ticksPerQN
+	ticksPerQuarterNote = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
 
         // check header chunk size compared to 6, the intended Mthd size
         int runningLength = 0;
  //       int runningLength += sizeof(numberOfTracks);
         runningLength += sizeof headerChunkLength;
-	cout << "file test 4" <<endl;
   //      int runningLength += sizeof(ticksPerQuarterNote);
     };
     
