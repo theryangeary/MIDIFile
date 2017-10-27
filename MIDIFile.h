@@ -42,42 +42,53 @@ class MIDIFile
 
     int charArrayToInt(char* bytes, int numBytes) {
 	    int result = 0;
-	for (int i = 0; i < numBytes; i++) {
-	       result = (result << 8) | bytes[i];
-	}	       
-	return result;
+	    for (int i = 0; i < numBytes; i++) {
+            result = (result << 8) | bytes[i];
+	    }	       
+    	return result;
 	}
+
   public:
     MIDIFile(ifstream * midiFile) {
-	// initialize variables
-	BPM = 120;
+        // initialize variables
+	    BPM = 120;
 
-        // find the beginning of the MIDI data
-        //midiFile.find('Mthd', 4); 
         // store MIDI header data
-	char tmp[4];
+	    char tmp[4];
         midiFile->read(tmp, 4); // read the header
 
-	midiFile->read(tmp, 
+	    midiFile->read(tmp, 
 			HEADER_CHUNK_LENGTH_BYTE_LENGTH); // read the chunk length
-	headerChunkLength = charArrayToInt(tmp, HEADER_CHUNK_LENGTH_BYTE_LENGTH);
+	    headerChunkLength = charArrayToInt(tmp, HEADER_CHUNK_LENGTH_BYTE_LENGTH);
 
         midiFile->read(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH); // read the format
-	formatNumber = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
-	format = static_cast<MIDIFormat>(formatNumber); // set MIDIFormat enum
+	    formatNumber = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
+	    format = static_cast<MIDIFormat>(formatNumber); // set MIDIFormat enum
 
         midiFile->read(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH); // read # of tracks
-	numberOfTracks = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
+	    numberOfTracks = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
 
         midiFile->read(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH); // read ticksPerQN
-	ticksPerQuarterNote = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
+	    ticksPerQuarterNote = charArrayToInt(tmp, HEADER_CHUNK_DATA_BYTE_LENGTH);
 
         // check header chunk size compared to 6, the intended Mthd size
         int runningLength = 0;
- //       int runningLength += sizeof(numberOfTracks);
+ 	    runningLength += sizeof numberOfTracks;
         runningLength += sizeof headerChunkLength;
-  //      int runningLength += sizeof(ticksPerQuarterNote);
+	    runningLength += sizeof ticksPerQuarterNote;
+
+	    if (runningLength == headerChunkLength) {
+		    // done reading header chunk
+		    createTracks(midiFile); // make tracks		
+	    }
+	    else {
+		
+	    }
     };
+
+    void createTracks(ifstream * midiFile) {
+
+    }
     
     Track * getTrack(int trackNumber) {
         return track[trackNumber];
