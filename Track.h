@@ -6,19 +6,26 @@
 #ifndef Track_h 
 #define Track_h 
 
-#include "NoteEvent.h"
+#include "MIDIEvent.h"
+#include <vector>
 
 class Track 
 {
   public:
-    Track() {
+    Track(int approxLength) {
+        MIDIEvents.resize(approxLength);
+        length = 0;
+    };
 
+    addEvent(MIDIEvent * midiEvent) {
+        MIDIEvents[length] = midiEvent;
+        length++;
     }
 
 
   private:
     int currentNote;
-    NoteEvent * noteEvents[];
+    std::vector<MIDIEvent *> MIDIEvents;
     int length;
 
 
