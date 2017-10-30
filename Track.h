@@ -17,11 +17,19 @@ class Track
         length = 0;
     };
 
-    addEvent(MIDIEvent * midiEvent) {
+    void addEvent(MIDIEvent * midiEvent) {
         MIDIEvents[length] = midiEvent;
         length++;
     }
 
+    int getLength() {
+        std::cout << this->length << std::endl;
+        return this->length;
+    }
+
+    std::vector<MIDIEvent *> getEventList() {
+        return MIDIEvents;
+    };
 
   private:
     int currentNote;
