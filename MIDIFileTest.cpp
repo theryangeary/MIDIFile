@@ -24,6 +24,7 @@ int main() {
     Track * track = emajor->getTrack(0);
     cout << typeid(track->getLength()).name() << endl;
     cout << typeid(track).name() << endl;
+    cout << track->returnInt() << endl;
     cout << track->getLength() << endl;
     cout << "test 1" << endl;
     for (int i = 0; i < track->getLength(); i++) {
