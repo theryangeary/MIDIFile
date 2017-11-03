@@ -10,11 +10,13 @@
 #include <fstream>
 #include "Track.h"
 #include "MIDIEvent.h"
+#include <string.h>
 
 #define HEADER_CHUNK_LENGTH_BYTE_LENGTH 4 
 #define HEADER_CHUNK_DATA_BYTE_LENGTH 2
 #define TRACK_CHUNK_LENGTH_BYTE_LENGTH 4
 #define TRACK_CHUNK_DATA_BYTE_LENGTH 2
+#define TRACK_CHUNK_HEADER_BYTE_LENGTH 4
 #define NIBBLE_LENGTH 4
 #define BYTE_LENGTH 8
 
@@ -48,7 +50,7 @@ class MIDIFile
 {
 
   private:
-    Track * tracks[];
+    Track ** tracks;
     int headerChunkLength;
     int ticksPerQuarterNote;
     int formatNumber;
@@ -60,7 +62,8 @@ class MIDIFile
 	    int result = 0;
 	    for (int i = 0; i < numBytes; i++) {
             result = (result << 8) | bytes[i];
-	    }	       
+	    }	      
+			cout << result << endl;
     	return result;
 	}
 
@@ -93,35 +96,42 @@ class MIDIFile
         runningLength += sizeof headerChunkLength;
 	    runningLength += sizeof ticksPerQuarterNote;
 
-	    if (runningLength == headerChunkLength) {
+	    //if (runningLength == headerChunkLength) {
 		    // done reading header chunk
             int trackNumber = 0;
             while (midiFile->good()) {
 		        createTrack(midiFile, trackNumber); // make tracks		
                 trackNumber++;
             }
-	    }
-	    else {
+	    //}
+	    //else {
 	        // there is a discrepancy between actual & expected header length	
-	    }
+	    //}
     };
 
     void createTrack(ifstream * midiFile, int trackNumber) {
         char tmp[4];
-        midiFile->read(tmp, TRACK_CHUNK_DATA_BYTE_LENGTH);
-        if (tmp == "Mtrk") {
+        midiFile->read(tmp, TRACK_CHUNK_HEADER_BYTE_LENGTH);;
+        if (tmp[0] == 'M' && tmp[1] == 'T' && tmp[2] == 'r' && tmp[3] == 'k') {
+				cout << "found a track" << endl;
             // continue making track
-            midiFile->read(tmp, TRACK_CHUNK_DATA_BYTE_LENGTH);
-            int trackLength = charArrayToInt(tmp, TRACK_CHUNK_DATA_BYTE_LENGTH);
+            midiFile->read(tmp, TRACK_CHUNK_LENGTH_BYTE_LENGTH);
+            int trackLength = charArrayToInt(tmp, TRACK_CHUNK_LENGTH_BYTE_LENGTH);
             int runningLength = 0;
             // track size may need more fine tuned adjustment to be always big
             // enough but without wasting space
             Track * track = new Track(trackLength / 4);
+// 						cout << "test1" << endl;
+ 						cout << runningLength << endl;
+ 						cout << trackLength << endl;
+// 						cout << (runningLength <= trackLength) << endl;
+
             while (runningLength < trackLength) {
                 int deltaT = 0;
                 char currentTimeByte;
                 do {
                     currentTimeByte = midiFile->get(); 
+										runningLength++;
                     // concatenate the seven less significant bits of the time
                     // byte, because the MSB is only to show whether current
                     // byte is the last part of deltaT
@@ -133,6 +143,8 @@ class MIDIFile
                     (statusAndChannel >> NIBBLE_LENGTH));
                 char channel = statusAndChannel << NIBBLE_LENGTH >> NIBBLE_LENGTH;
                 char param1 = midiFile->get();
+								runningLength++;
+								cout << "Adding event: deltaT: " << deltaT << " param1: " << param1 << endl;
                 if (statusAndChannel >> NIBBLE_LENGTH <= 0xC) {
                     char param2 = midiFile->get();
                     track->addEvent(new MIDIEvent(deltaT, eventType, param1,
@@ -144,10 +156,12 @@ class MIDIFile
                 }
             }
             tracks[trackNumber] = track;
+						cout << track << endl;
         }
         else {
+				cout << "if False" <<endl;
             // handle the fact that this is not a track
-            cout << "This is not a track!" << endl;
+            //cout << "This is not a track!" << endl;
         }
     }
     

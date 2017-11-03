@@ -11,27 +11,31 @@
 
 class Track 
 {
+    
+  public:
     int currentNote;
     std::vector<MIDIEvent *> MIDIEvents;
-    int length;
     int throwaway;
-  public:
-    Track(int approxLength); 
-    void addEvent(MIDIEvent * midiEvent); 
-        int returnInt() {
-            return 5;
-        }
-
-        int getLength() {
-            return length;
-        }
-
-        std::vector<MIDIEvent *> getEventList() {
-            return MIDIEvents;
-        }
-
-  private:
-
+    int length;
+    
+    void addEvent(MIDIEvent * midiEvent);
+    Track(int approxLength);
 };
+
+Track::Track(int approxLength) {
+    MIDIEvents.resize(approxLength);
+    length = 0;
+    throwaway = 1;
+}
+
+void Track::addEvent(MIDIEvent * midiEvent) {
+  //std::cout << "test" << std::endl;
+  if (MIDIEvents.capacity() < length) {
+    MIDIEvents.resize(length+1);
+  }
+    MIDIEvents[length] = midiEvent;
+    length++;
+  //std::cout << length << std::endl;
+}
 
 #endif
