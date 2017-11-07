@@ -20,7 +20,7 @@ enum EventType {
 class MIDIEvent
 {
   public:
-    MIDIEvent(int deltaT, EventType eventType, char param1, char param2 = -1,
+    MIDIEvent(int deltaT, EventType eventType, int param1, int param2 = -1,
         char channel = 0) {
         this->deltaT = deltaT;
         this->eventType = eventType;
@@ -39,32 +39,32 @@ class MIDIEvent
         return eventType;
     }
 
-    char getParam1() {
+    int getParam1() {
         return param1;
     }
 
-    char getParam2() {
+    int getParam2() {
         return param2;
     }
 
-    char getChannel() {
+    int getChannel() {
         return channel;
     }
 
-    char getPitch() {
+    int getPitch() {
         return getParam1();
     }
 
-    char getVelocity() {
+    int getVelocity() {
         return getParam2();
     }
 
   private:
     int deltaT;
     EventType eventType;
-    char param1;
-    char param2;
-    char channel;
+    int param1;
+    int param2;
+    int channel;
 
 
 };
