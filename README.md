@@ -2,6 +2,10 @@
 C++ Library for interfacing with MIDI files
 
 # Usage
+Include MIDIFile.h
+```
+#include MIDIFile.h
+```
 Create a MIDIFile object by passing the constructor the address of an ifstream containing your MIDI file:
 ```
 ifstream midiFile;
