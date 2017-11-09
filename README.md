@@ -27,7 +27,7 @@ for (int i = 0; i < myTrack->length; i++) {
     std::vector<MIDIEvent*> eventList = myTrack->MIDIEvents;
     MIDIEvent * event = eventList[i];
     cout << "deltaT: " << event->getDeltaT() << endl;
-    cout << "status: " << event->getEventType() << endl;
+    cout << "status: " << event->getStatus() << endl;
     cout << "channel: " << event->getChannel() << endl;
     cout << "pitch: " << event->getParam1() << endl;
     cout << "velocity: " << event->getParam2() << endl;
