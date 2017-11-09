@@ -39,6 +39,10 @@ class MIDIEvent
         return eventType;
     }
 
+    EventType getStatus() {
+        return getEventType();
+    }
+
     int getParam1() {
         return param1;
     }
