@@ -7,7 +7,7 @@
 #define Track_h 
 
 #include "MIDIEvent.h"
-#include <vector>
+#include <ArduinoSTL.h>
 
 class Track 
 {
@@ -29,13 +29,11 @@ Track::Track(int approxLength) {
 }
 
 void Track::addEvent(MIDIEvent * midiEvent) {
-  //std::cout << "test" << std::endl;
   if (MIDIEvents.capacity() < length) {
     MIDIEvents.resize(length+1);
   }
     MIDIEvents[length] = midiEvent;
     length++;
-  //std::cout << length << std::endl;
 }
 
 #endif
