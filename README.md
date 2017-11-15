@@ -1,14 +1,19 @@
 # MIDIFile
-C++ Library for interfacing with MIDI files
+C++ Library for interfacing with MIDI files, using Arduino
 
 # Usage
-Include MIDIFile.h
+Include MIDIFile.h and SdFat library
 ```
+#include <SdFat.h>
 #include MIDIFile.h
+```
+For drop-in replacement of Arduino SD functions with SdFat functions, declare: 
+```
+SdFat SD;
 ```
 Create a MIDIFile object by passing the constructor the address of an ifstream containing your MIDI file:
 ```
-ifstream midiFile;
+fstream midiFile;
 midiFile.open("path/to/midi/file.mid");
 MIDIFile * myMIDIFile = new MIDIFile(&midiFile);
 ```
